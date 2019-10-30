@@ -31,6 +31,10 @@ import System.Random
 -- inputKey _ gstate = gstate -- Otherwise keep the same
 
 inputHandler :: Event -> World -> World
+
+inputHandler (EventKey (SpecialKey KeyEsc) Down _ _) world = undefined
+
+
 --Player 1 actions
 inputHandler (EventKey (SpecialKey KeyUp) Down _ _) world = undefined
 

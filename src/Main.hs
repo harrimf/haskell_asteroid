@@ -7,10 +7,10 @@ import View
 import Graphics.Gloss
 
 main :: IO ()
-main = display FullScreen white (Circle 80)
--- main = playIO (InWindow "Counter" (400, 400) (0, 0)) -- Or FullScreen
---               black            -- Background color
---               10               -- Frames per second
+main = display FullScreen white (Circle 120)
+-- main = playIO (InWindow "Asteroid" (400, 400) (0, 0)) -- Or FullScreen
+--               yellow            -- Background color
+--               30               -- Frames per second
 --               initialState     -- Initial state
 --               view             -- View function
 --               input            -- Event function
