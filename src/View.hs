@@ -5,6 +5,9 @@ module View where
 import Graphics.Gloss
 import Model
 
+
+view :: Float -> Float -> World -> Picture
+view = undefined
 -- view :: GameState -> IO Picture
 -- view = return . viewPure
 
