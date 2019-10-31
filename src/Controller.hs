@@ -1,8 +1,13 @@
 -- | This module defines how the state changes
 --   in response to time and user input
-module Controller where
+module Controller(
+    frameHandler,
+    inputHandler
+) where
 
 import Model
+import Handlers.FrameHandler
+import Handlers.InputHandler
 
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
@@ -29,47 +34,5 @@ import System.Random
 --   = -- If the user presses a character key, show that one
 --     gstate { infoToShow = ShowAChar c }
 -- inputKey _ gstate = gstate -- Otherwise keep the same
-
-inputHandler :: Event -> World -> World
-
-inputHandler (EventKey (SpecialKey KeyEsc) Down _ _) world = undefined
-
-
---Player 1 actions
-inputHandler (EventKey (SpecialKey KeyUp) Down _ _) world = undefined
-
-inputHandler (EventKey (SpecialKey KeyLeft) Down _ _) world = undefined
-
-inputHandler (EventKey (SpecialKey KeyRight) Down _ _) world = undefined
-
-inputHandler (EventKey (SpecialKey KeyEnter) Down _ _) world = undefined
-
---key release actions for p1
-inputHandler (EventKey (SpecialKey KeyUp) Up _ _) world = undefined
-
-inputHandler (EventKey (SpecialKey KeyLeft) Up _ _) world = undefined
-
-inputHandler (EventKey (SpecialKey KeyRight) Up _ _) world = undefined
-
-
---player 2 actions
-inputHandler (EventKey w Down _ _) world = undefined
-
-inputHandler (EventKey a Down _ _) world = undefined
-
-inputHandler (EventKey d Down _ _) world = undefined
-
-inputHandler (EventKey (SpecialKey KeyEnter) Down _ _) w = undefined
-
---key release actions for p2
-inputHandler (EventKey w Up _ _) world = undefined
-
-inputHandler (EventKey a Up _ _) world = undefined
-
-inputHandler (EventKey d Up _ _) world = undefined
-
-
-
-
 
 --We moeten een grote methode hebben die voor elke frame de
