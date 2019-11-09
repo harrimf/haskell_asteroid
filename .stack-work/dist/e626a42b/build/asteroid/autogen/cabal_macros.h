@@ -22,6 +22,17 @@
   (major1) == 4 && (major2) == 12 && (minor) <= 0)
 #endif /* MIN_VERSION_base */
 
+/* package containers-0.6.0.1 */
+#ifndef VERSION_containers
+#define VERSION_containers "0.6.0.1"
+#endif /* VERSION_containers */
+#ifndef MIN_VERSION_containers
+#define MIN_VERSION_containers(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  6 || \
+  (major1) == 0 && (major2) == 6 && (minor) <= 0)
+#endif /* MIN_VERSION_containers */
+
 /* package gloss-1.13.0.1 */
 #ifndef VERSION_gloss
 #define VERSION_gloss "1.13.0.1"
@@ -166,7 +177,7 @@
 #endif /* MIN_TOOL_VERSION_strip */
 
 #ifndef CURRENT_COMPONENT_ID
-#define CURRENT_COMPONENT_ID "asteroid-0.1.0.0-DpzFwg4qUsH131WHpzTCzs-asteroid"
+#define CURRENT_COMPONENT_ID "asteroid-0.1.0.0-2EF0tLCRs2oACLIqlY54ZX-asteroid"
 #endif /* CURRENT_COMPONENT_ID */
 #ifndef CURRENT_PACKAGE_VERSION
 #define CURRENT_PACKAGE_VERSION "0.1.0.0"

@@ -6,14 +6,16 @@ import View
 
 
 import Graphics.Gloss
+import Graphics.Gloss.Interface.IO.Game
+
 
 main :: IO ()
-main = display FullScreen white (Circle 120)
-    
--- main = play (InWindow "Asteroid" (400, 400) (0, 0)) -- Or FullScreen
---               yellow           -- Background color
---               30               -- Frames per second
---               initialState     -- Initial state
---               view             -- View function
---               inputHandler     -- Event function
---               frameHandler     -- Step function
+main = playIO (InWindow "Asteroid" (400,400) (0, 0)) 
+              asteroidColor           
+              30               
+              initialState     
+              view             
+              inputHandler    
+              frameHandler   
+    where 
+        asteroidColor = light black

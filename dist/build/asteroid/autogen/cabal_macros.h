@@ -22,6 +22,17 @@
   (major1) == 4 && (major2) == 12 && (minor) <= 0)
 #endif /* MIN_VERSION_base */
 
+/* package containers-0.6.0.1 */
+#ifndef VERSION_containers
+#define VERSION_containers "0.6.0.1"
+#endif /* VERSION_containers */
+#ifndef MIN_VERSION_containers
+#define MIN_VERSION_containers(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  6 || \
+  (major1) == 0 && (major2) == 6 && (minor) <= 0)
+#endif /* MIN_VERSION_containers */
+
 /* package gloss-1.13.1.1 */
 #ifndef VERSION_gloss
 #define VERSION_gloss "1.13.1.1"
