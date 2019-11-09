@@ -1,0 +1,28 @@
+C:\haskell_development\game\asteroid\asteroid.cabal:
+  hash: a9bb98734fd4bd872c5a3160d83d772042cc5e11e64da6275459a26911b05c5d
+  size: 495
+  modtime: 1573295464
+C:\haskell_development\game\asteroid\src\View.hs:
+  hash: 17a57007835bf06ff4b869074e28d1d729f53e3fc69c328ef2cd9c6c62025d22
+  size: 217
+  modtime: 1573296113
+C:\haskell_development\game\asteroid\src\Handlers\FrameHandler.hs:
+  hash: 64b35512ee0917d46f9928cb4966eace7a18d07c7aff7b5405c14aad9a801c2a
+  size: 2377
+  modtime: 1573326925
+C:\haskell_development\game\asteroid\src\Model.hs:
+  hash: 2e2460e5248e8d43033f67bf8124b754b8b1f7c3ec2803e90b879133f1ace52b
+  size: 8217
+  modtime: 1573325887
+C:\haskell_development\game\asteroid\src\Controller.hs:
+  hash: f559616bca0a820ad70c2afbf04d03e82afbff3b7418e8c9525bb24fb4825678
+  size: 220
+  modtime: 1573294964
+C:\haskell_development\game\asteroid\src\Main.hs:
+  hash: 3c2d2590e70a42e82bd16c86d2cfe7d2e67b85cdcb65cd82681ea6a986cfa86f
+  size: 438
+  modtime: 1573297978
+C:\haskell_development\game\asteroid\src\Handlers\InputHandler.hs:
+  hash: ac333943b069506489d7899893e7c5c27378c06b1b8005066a6be470ef0d631c
+  size: 758
+  modtime: 1573327239
