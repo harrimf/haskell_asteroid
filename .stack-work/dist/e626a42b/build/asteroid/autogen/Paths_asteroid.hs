@@ -30,7 +30,7 @@ version = Version [0,1,0,0] []
 bindir, libdir, dynlibdir, datadir, libexecdir, sysconfdir :: FilePath
 
 bindir     = "C:\\haskell_development\\game\\asteroid\\.stack-work\\install\\2015b563\\bin"
-libdir     = "C:\\haskell_development\\game\\asteroid\\.stack-work\\install\\2015b563\\lib\\x86_64-windows-ghc-8.6.5\\asteroid-0.1.0.0-2EF0tLCRs2oACLIqlY54ZX-asteroid"
+libdir     = "C:\\haskell_development\\game\\asteroid\\.stack-work\\install\\2015b563\\lib\\x86_64-windows-ghc-8.6.5\\asteroid-0.1.0.0-6UjA5JGouj0KT4da9zgnnB-asteroid"
 dynlibdir  = "C:\\haskell_development\\game\\asteroid\\.stack-work\\install\\2015b563\\lib\\x86_64-windows-ghc-8.6.5"
 datadir    = "C:\\haskell_development\\game\\asteroid\\.stack-work\\install\\2015b563\\share\\x86_64-windows-ghc-8.6.5\\asteroid-0.1.0.0"
 libexecdir = "C:\\haskell_development\\game\\asteroid\\.stack-work\\install\\2015b563\\libexec\\x86_64-windows-ghc-8.6.5\\asteroid-0.1.0.0"
