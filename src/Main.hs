@@ -11,6 +11,9 @@ import System.IO
 
 import Data.Time.Clock
 
+-- import qualified Data.Text    as Text
+-- import qualified Data.Text.IO as Text
+
 main :: IO ()
 main = do random <- getStdGen --can add custom pause message from file
           fileHandle <- openFile "scores.txt" ReadWriteMode
@@ -31,3 +34,7 @@ hGetContents' h = do
     else do
       c <- hGetChar h
       fmap (c:) $ hGetContents' h
+
+-- getLastStringFromFile :: String
+-- getLastStringFromFile = do  ls <- fmap Text.lines (Text.readFile "scores.txt")
+--                             head . reverse ls  

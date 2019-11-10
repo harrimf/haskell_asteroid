@@ -55,6 +55,17 @@
   (major1) == 1 && (major2) == 1 && (minor) <= 0)
 #endif /* MIN_VERSION_random */
 
+/* package text-1.2.3.1 */
+#ifndef VERSION_text
+#define VERSION_text "1.2.3.1"
+#endif /* VERSION_text */
+#ifndef MIN_VERSION_text
+#define MIN_VERSION_text(major1,major2,minor) (\
+  (major1) <  1 || \
+  (major1) == 1 && (major2) <  2 || \
+  (major1) == 1 && (major2) == 2 && (minor) <= 3)
+#endif /* MIN_VERSION_text */
+
 /* package time-1.8.0.2 */
 #ifndef VERSION_time
 #define VERSION_time "1.8.0.2"
