@@ -1,11 +1,14 @@
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+
 
 module Model where
 
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
-import Data.Set hiding (map)
+import Data.List
+import Data.Set hiding (map, split, take)
 
 
 -- data Asteroid = Asteroid {
@@ -54,12 +57,12 @@ data World = World {
     state         :: State,
     score         :: Score,
     time          :: Time, 
-    screenSize    :: Size,
     randomGen     :: StdGen,
     keys          :: Set Key,
     player        :: Player,
     projectiles   :: [Projectile],
-    asteroids     :: [Asteroid]
+    asteroids     :: [Asteroid],
+    asteroidSpawn :: Time
     -- bombs         :: [Bomb]
     --hostileShips  :: [HostileShip]
 } 
@@ -119,6 +122,9 @@ instance Render Player where
 instance Render Projectile where
   render projectile@(Projectile {..}) = uncurry translate projectilePosition $ projectileSprite
 
+instance Render Asteroid where
+  render asteroid@(Asteroid {..}) = uncurry translate asteroidPosition $ color white $ circleSolid asteroidScale
+
 -- Class for handling player firing projectiles
 class Fire a where
   fire :: a -> World -> [Projectile]
@@ -144,7 +150,7 @@ instance Displace Player where
           (x,y) = playerPosition
           (dx, dy) = generateDelta player
           (x2, y2) = (x+dx, y+dy)
-          (w, h) = screenSize initialState
+          (w, h) = screenSize
           (xBound, yBound) = (((w / 2) + playerScale), ((h / 2) + playerScale))
 
 instance Displace Projectile where
@@ -152,6 +158,18 @@ instance Displace Projectile where
     where 
       (x,y) = projectilePosition
       (dx, dy) = generateDelta projectile
+
+instance Displace Asteroid where
+  displace asteroid@(Asteroid {..})  = asteroid {asteroidPosition = newPosition }
+    where 
+          newPosition | x2 > xBound || x2 < (-1) * xBound = (-1*x2, y2)
+                      | y2 > yBound || y2 < (-1) * yBound = (x2, -1*y2)
+                      | otherwise                         = (x2, y2)
+          (x,y) = asteroidPosition
+          (dx, dy) = generateDelta asteroid
+          (x2, y2) = (x+dx, y+dy)
+          (w, h) = screenSize
+          (xBound, yBound) = (((w / 2) + asteroidScale), ((h / 2) + asteroidScale))
 
 --Class for handling position changes in regard to acceleration & speed changes
 class PositionDelta a where
@@ -163,10 +181,45 @@ instance PositionDelta Player where
     where 
       newPos    | newSpeed < playerMaxSpeed        = getNewPosition playerAngle newSpeed 
                 | otherwise                     = getNewPosition playerAngle playerMaxSpeed 
-      newSpeed     = accelerate playerMoveDuration playerSpeed playerAcceleration
+      newSpeed    = accelerate playerMoveDuration playerSpeed playerAcceleration
 
 instance PositionDelta Projectile where
   generateDelta projectile@(Projectile {..}) = getNewPosition projectileAngle projectileSpeed
+
+instance PositionDelta Asteroid where
+  generateDelta asteroid@(Asteroid {..}) = getNewPosition asteroidAngle asteroidSpeed
+
+class Collide a b where
+  collide :: a -> b -> Maybe a
+
+instance Collide Projectile Player where
+  collide projectile@(Projectile {..}) player@(Player {..})
+      | (x2-x1)^2 +  (y2-y1)^2 < (projectileScale+playerScale)^2 = Just projectile
+      | otherwise = Nothing
+    where
+      (x1,y1) = projectilePosition
+      (x2,y2) = playerPosition
+
+instance Collide Projectile Asteroid where
+  collide projectile@(Projectile {..}) asteroid@(Asteroid {..})
+      | (x4-x3)^2 + (y4-y3)^2 < (projectileScale+asteroidScale)^2 = Just projectile
+      | otherwise = Nothing
+    where
+      (x3,y3) = projectilePosition
+      (x4,y4) = asteroidPosition
+
+instance Collide Asteroid Player where
+  collide asteroid@(Asteroid {..}) player@(Player {..})
+      | (x6-x5)^2 + (y6-y5)^2 < (asteroidScale+playerScale)^2 = Just asteroid
+      | otherwise = Nothing
+    where
+      (x5,y5) = asteroidPosition
+      (x6,y6) = playerPosition
+
+
+
+
+
 
 
 --helper functions
@@ -193,20 +246,26 @@ accelerate :: Time -> Speed -> Acceleration -> Speed
 accelerate duration speed acceleration | duration > 0 = speed + duration*acceleration
                                        | otherwise    = speed - (acceleration / 100)
 
+-- helper function for collision handling
+
+
+-- constants                                     
+screenSize :: Size                                     
+screenSize = (400, 400)
 
 -- Initial states for the world, projectiles and projectile                                                      
-initialState :: World
-initialState = World {
+initialState :: StdGen -> World
+initialState r = World {
                 state = Playing,
                 score = 0,
                 time = 0,
-                screenSize = (400, 400),
-                randomGen = mkStdGen 69,
+                randomGen = r,
                 keys = empty,
                 player = initialPlayer,
                 projectiles = [],
-                asteroids = []
-                --bombs = []
+                asteroids = [],
+                asteroidSpawn = 0
+                
             }
 
 initialPlayer :: Player
@@ -232,6 +291,38 @@ initialProjectile = Projectile {
                       projectileDeleted = False,
                       projectilePosition = (\(x,y) -> (-1*x,y)) (playerPosition initialPlayer),
                       projectileSpeed = 30,
-                      projectileSprite = color red $ circleSolid 4,
+                      projectileSprite = color red $ circleSolid (projectileScale initialProjectile),
                       projectileScale = 4
             }
+
+
+initialAsteroid :: Asteroid
+initialAsteroid = Asteroid {
+                    asteroidAngle = 0,
+                    asteroidDeleted = False,
+                    asteroidPosition = (0,0),
+                    asteroidSpeed = 7,
+                    asteroidSprite = color white $ circleSolid 8,
+                    asteroidScale = 8
+}
+
+--generate random Asteroid 
+
+generateAsteroid  :: StdGen -> Asteroid
+generateAsteroid seed = Asteroid { 
+                          asteroidAngle = newAngle,
+                          asteroidDeleted = False,
+                          asteroidPosition = newPosition,
+                          asteroidSpeed = newSpeed,
+                          asteroidSprite = color white $ circleSolid newScale,
+                          asteroidScale = newScale*2.5
+}
+    where 
+      (s1:s2:s3:_) = take 3 (unfoldr (Just . split) seed)
+      newAngle  = randomInt 0 360 s2
+      newPosition  = (fromIntegral $ randomInt (-200) 200 s3, fromIntegral $ randomInt (-200) 200 s3)
+      newSpeed     = fromIntegral $ randomInt 5 15 s1
+      newScale     = fromIntegral $ randomInt 4 9 s1
+          
+randomInt  :: Int -> Int -> StdGen -> Int
+randomInt  start end seed = fst $ randomR (start, end) seed

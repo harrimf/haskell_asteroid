@@ -8,7 +8,7 @@ import Model
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
-import Data.Set hiding (map, null)
+import Data.Set hiding (map, null, split)
   
 frameHandler :: Float -> World -> IO World
 frameHandler seconds world = return (frameHandlerPure seconds world)
@@ -16,7 +16,8 @@ frameHandler seconds world = return (frameHandlerPure seconds world)
 frameHandlerPure :: Float -> World -> World
 frameHandlerPure seconds world@(World {..})
     | state == Paused = world
-    | otherwise = handlePlayerTurn $ handleProjectiles $ handlePlayerFire seconds $ handlePlayerDisplace seconds $ world { time = time + seconds }
+    | otherwise = handlePlayerTurn  $ handleProjectiles $ handleAsteroids $ handlePlayerFire seconds $ handlePlayerDisplace seconds $ handleAsteroidSpawn seconds
+                  $ world { time = time + seconds}
 
 handlePlayerDisplace :: Float -> World -> World
 handlePlayerDisplace seconds world@(World {..}) 
@@ -26,6 +27,16 @@ handlePlayerDisplace seconds world@(World {..})
 handleProjectiles :: World -> World
 handleProjectiles world@(World {..})  | projectiles  /= [] = world { projectiles = displace projectiles }
                                       | otherwise   = world
+
+handleAsteroids :: World -> World
+handleAsteroids world@(World {..})  | asteroids  /= [] = world { asteroids = displace asteroids }
+                                    | otherwise   = world
+
+handleAsteroidSpawn :: Float -> World -> World
+handleAsteroidSpawn seconds world@(World {..})  | (length asteroids) < 4 && asteroidSpawn > 12 = world { asteroidSpawn = 0, randomGen = newGen, asteroids = [(generateAsteroid  seed)] ++ asteroids }
+                                                | otherwise = world { asteroidSpawn = asteroidSpawn + seconds, randomGen = newGen }
+    where 
+        (newGen, seed) = split randomGen
 
 handlePlayerFire :: Float -> World -> World
 handlePlayerFire seconds world@(World {..}) 
