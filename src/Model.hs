@@ -8,7 +8,7 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
 import Data.List
-import Data.Set hiding (map, split, take)
+import Data.Set hiding (map, split, take, delete)
 
 
 -- data Asteroid = Asteroid {
@@ -247,6 +247,23 @@ accelerate duration speed acceleration | duration > 0 = speed + duration*acceler
                                        | otherwise    = speed - (acceleration / 100)
 
 -- helper function for collision handling
+-- handleCollision :: World -> World
+-- handleCollision world@(World {..}) = world {  
+--                                       asteroids = collAsts,
+--                                       state     = collPlayer
+--                                     }
+--   where 
+--         collPAsts  = [a | a <- asteroids, (Just a) == collide player a]
+--         collPlayer | (length collPAsts) > 0  = Paused
+--         collAsts   | (length collPAsts) > 0 = case collPAsts of
+--                                             (cAst:cAsts) -> delete cAst asteroids
+--                    | otherwise              = asteroids
+
+-- instance Eq Asteroid where
+-- (==) (Asteroid sp1 sz1 dr1 st1 ps1) (Asteroid sp2 sz2 dr2 st2 ps2) = sp1==sp2 && sz1==sz2 && dr1==dr2 && st1==st2 && ps1==ps2
+
+-- instance Eq Bullet where
+-- (==) (Bullet sz1 sp1 ps1 dr1 cl1) (Bullet sz2 sp2 ps2 dr2 cl2) = sp1==sp2 && sz1==sz2 && dr1==dr2 && cl1==cl2
 
 
 -- constants                                     
