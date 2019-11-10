@@ -62,7 +62,8 @@ data World = World {
     player        :: Player,
     projectiles   :: [Projectile],
     asteroids     :: [Asteroid],
-    asteroidSpawn :: Time
+    asteroidSpawn :: Time,
+    lastGameTime  :: String
     -- bombs         :: [Bomb]
     --hostileShips  :: [HostileShip]
 } 
@@ -254,18 +255,18 @@ screenSize :: Size
 screenSize = (400, 400)
 
 -- Initial states for the world, projectiles and projectile                                                      
-initialState :: StdGen -> World
-initialState r = World {
-                state = Playing,
-                score = 0,
-                time = 0,
-                randomGen = r,
-                keys = empty,
-                player = initialPlayer,
-                projectiles = [],
-                asteroids = [],
-                asteroidSpawn = 0
-                
+initialState :: StdGen -> String -> World
+initialState r s = World {
+                    state = Playing,
+                    score = 0,
+                    time = 0,
+                    randomGen = r,
+                    keys = empty,
+                    player = initialPlayer,
+                    projectiles = [],
+                    asteroids = [],
+                    asteroidSpawn = 0,
+                    lastGameTime = s
             }
 
 initialPlayer :: Player
