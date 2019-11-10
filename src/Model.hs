@@ -11,15 +11,6 @@ import Data.List
 import Data.Set hiding (map, split, take, delete)
 
 
--- data Asteroid = Asteroid {
---     asteroidAngle             :: Angle,
---     asteroidDeleted           :: Deleted,  
---     asteroidPosition          :: Position,
---     asteroidVelocity          :: Velocity,
---     asteroidSprite            :: Picture,
---     asteroidSize              :: Size 
--- } deriving(Eq)
-
 -- data Bomb = Bomb {
 --     bombAngle         :: Angle,
 --     bombDeleted       :: Deleted,
@@ -40,13 +31,6 @@ type Time       = Float
 type Acceleration = Float
 type Scale      = Float
 type Speed      = Float
-
--- data AccelerationState = Accelerating | NotAccelerating
---   deriving(Eq)
--- data ShootState = Shooting | NotShooting
---   deriving(Eq)
--- data RotateState = RotatingRight | RotatingLeft | NotRotating
---   deriving(Eq)
 
 
 data State = Playing | Paused | GameOver
@@ -192,34 +176,21 @@ instance PositionDelta Asteroid where
 class Collide a b where
   collide :: a -> b -> Maybe a
 
-instance Collide Projectile Player where
-  collide projectile@(Projectile {..}) player@(Player {..})
-      | (x2-x1)^2 +  (y2-y1)^2 < (projectileScale+playerScale)^2 = Just projectile
+instance Collide Asteroid Projectile where
+  collide asteroid@(Asteroid {..}) projectile@(Projectile {..})
+      | (x2-x1)^2 + (y2-y1)^2 <= (asteroidScale+projectileScale)^2 = Just asteroid
       | otherwise = Nothing
     where
-      (x1,y1) = projectilePosition
-      (x2,y2) = playerPosition
-
-instance Collide Projectile Asteroid where
-  collide projectile@(Projectile {..}) asteroid@(Asteroid {..})
-      | (x4-x3)^2 + (y4-y3)^2 < (projectileScale+asteroidScale)^2 = Just projectile
-      | otherwise = Nothing
-    where
-      (x3,y3) = projectilePosition
-      (x4,y4) = asteroidPosition
+      (x1,y1) = asteroidPosition
+      (x2,y2) = projectilePosition
 
 instance Collide Asteroid Player where
   collide asteroid@(Asteroid {..}) player@(Player {..})
-      | (x6-x5)^2 + (y6-y5)^2 < (asteroidScale+playerScale)^2 = Just asteroid
+      | ((-1)*x4-x3)^2 + (y4-y3)^2 <= (asteroidScale+playerScale)^2 = Just asteroid
       | otherwise = Nothing
     where
-      (x5,y5) = asteroidPosition
-      (x6,y6) = playerPosition
-
-
-
-
-
+      (x3,y3) = asteroidPosition
+      (x4,y4) = playerPosition
 
 
 --helper functions
@@ -234,8 +205,8 @@ renderCoordinate angle (x,y) (w,h) = (-1*(x2 + x),y2 + y)
 --helper for firing projectiles
 adjustProjectile :: Projectile -> Angle -> Position-> Projectile
 adjustProjectile projectile@(Projectile {..}) angle (x,y)  = projectile {
-                                                            projectileAngle = ((-1)*angle),
-                                                            projectilePosition = ((-1)*x,y)
+                                                             projectileAngle = ((-1)*angle),
+                                                             projectilePosition = ((-1)*x,y)
                                                         }
 --helper for Delta Position
 getNewPosition :: Angle -> Speed -> Position
@@ -245,26 +216,6 @@ getNewPosition angle speed = (speed * sin(-1*(fromIntegral angle) * pi / (fromIn
 accelerate :: Time -> Speed -> Acceleration -> Speed
 accelerate duration speed acceleration | duration > 0 = speed + duration*acceleration
                                        | otherwise    = speed - (acceleration / 100)
-
--- helper function for collision handling
--- handleCollision :: World -> World
--- handleCollision world@(World {..}) = world {  
---                                       asteroids = collAsts,
---                                       state     = collPlayer
---                                     }
---   where 
---         collPAsts  = [a | a <- asteroids, (Just a) == collide player a]
---         collPlayer | (length collPAsts) > 0  = Paused
---         collAsts   | (length collPAsts) > 0 = case collPAsts of
---                                             (cAst:cAsts) -> delete cAst asteroids
---                    | otherwise              = asteroids
-
--- instance Eq Asteroid where
--- (==) (Asteroid sp1 sz1 dr1 st1 ps1) (Asteroid sp2 sz2 dr2 st2 ps2) = sp1==sp2 && sz1==sz2 && dr1==dr2 && st1==st2 && ps1==ps2
-
--- instance Eq Bullet where
--- (==) (Bullet sz1 sp1 ps1 dr1 cl1) (Bullet sz2 sp2 ps2 dr2 cl2) = sp1==sp2 && sz1==sz2 && dr1==dr2 && cl1==cl2
-
 
 -- constants                                     
 screenSize :: Size                                     

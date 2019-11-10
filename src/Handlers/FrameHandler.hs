@@ -8,15 +8,16 @@ import Model
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
-import Data.Set hiding (map, null, split)
+import Data.List
+import Data.Set hiding (map, null, split, delete)
   
 frameHandler :: Float -> World -> IO World
 frameHandler seconds world = return (frameHandlerPure seconds world)
 
 frameHandlerPure :: Float -> World -> World
 frameHandlerPure seconds world@(World {..})
-    | state == Paused = world
-    | otherwise = handlePlayerTurn  $ handleProjectiles $ handleAsteroids $ handlePlayerFire seconds $ handlePlayerDisplace seconds $ handleAsteroidSpawn seconds
+    | state == Paused || state == GameOver = world
+    | otherwise = handleCollision $ handlePlayerTurn  $ handleProjectiles $ handleAsteroids $ handlePlayerFire seconds $ handlePlayerDisplace seconds $ handleAsteroidSpawn seconds
                   $ world { time = time + seconds}
 
 handlePlayerDisplace :: Float -> World -> World
@@ -54,3 +55,23 @@ adjustAngle key player@(Player {..}) = player { playerAngle = newAngle }
     where 
         newAngle  | key == (SpecialKey KeyRight) = mod (playerAngle + playerTurnRadius) 360
                   | otherwise                    = mod (playerAngle - playerTurnRadius) 360 
+
+handleCollision :: World -> World
+handleCollision world@(World {..}) = world {  
+                                        state = newState,
+                                        asteroids = newAsteroids,
+                                        projectiles = newProjectiles
+                                     }
+    where 
+        collidedAsteroidProjectile  = [(asteroid, projectile) | asteroid <- asteroids, projectile <- projectiles, (Just asteroid) == collide asteroid projectile]
+        newAsteroids | fst (unzip collidedAsteroidProjectile) /= [] = case fst (unzip collidedAsteroidProjectile) of
+                                                                    (asteroid:_) -> delete asteroid asteroids
+                     | otherwise = asteroids
+                    
+        newProjectiles | snd (unzip collidedAsteroidProjectile) /= [] = case snd (unzip collidedAsteroidProjectile) of
+                                                                        (projectile:_) -> delete projectile projectiles
+                       | otherwise = projectiles
+
+        collidedAsteroidPlayer  = [asteroid | asteroid <- asteroids, (Just asteroid) == collide asteroid player]
+        newState | collidedAsteroidPlayer /= [] = GameOver
+                 | otherwise               = Playing
